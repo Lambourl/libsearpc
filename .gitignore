@@ -55,3 +55,5 @@ tests/clar.suite
 tests/.clarcache
 tests/*.trs
 test-driver
+build/
+

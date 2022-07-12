@@ -1,0 +1,9 @@
+cmake 3.21.3
+features core
+portfile.cmake e34e7244e1b3ac9be73563186594ce98fec63a3d
+ports.cmake c969892a7210e71589dca21c1563c85b195a04bf
+post_build_checks 2
+triplet x64-osx
+triplet_abi 35368e3c9b7c11ee49bf641f06d7a6767fea4d5f-94be8c046f9e0595c199a36690d288f70945643b-d2950be4afcd67a7196740d7c5fe3f90ae542b5b
+vcpkg.json ab504c1c2ae906b016df7312515771119a842035
+vcpkg_find_acquire_program d5dc12dad9667f644ffceb19e23d06bdb2c3298f

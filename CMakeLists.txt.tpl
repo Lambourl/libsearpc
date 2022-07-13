@@ -100,10 +100,7 @@ target_include_directories({{project}} BEFORE {{project_lib_type_inc}}
   {{/project_srcs}}
   $<INSTALL_INTERFACE:${include_install_dir}/>)
 
-
-if (WIN32)
 target_include_directories({{project}} PUBLIC ${GLIB2_INCLUDE_DIRS})
-endif()
 
 
 #{{#deps}}
@@ -112,11 +109,6 @@ endif()
 #{{/deps}}
 
 target_link_libraries({{project}} {{project_lib_type}} 
-if (WIN32)
-${GLIB2_LIBRARIES}
-elseif(UNIX AND APPLE) 
-PkgConfig::GLIB2
-endif()
  ${GLIB2_LIBRARIES}
   {{#platform_deps}}
     {{#components_link}}{{pkg_name}}::{{component}} {{/components_link}}

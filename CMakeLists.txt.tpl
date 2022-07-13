@@ -56,14 +56,19 @@ endif()
 
 
 set(all_cpp_project " {{project_lib_cpps}}")
-string(REGEX MATCH [a-zA-Z0-9./-]+ one_cpp ${all_cpp_project})
+string(REGEX MATCH [./-]+ project_root_relative ${all_cpp_project})
+get_filename_component(project_root ${project_root_relative} ABSOLUTE)
+message (" luc luc luc ${project_root}")
+
 if (WIN32)
-include("${one_cpp}/../../vcpkg_test/win/glib/scripts/buildsystems/vcpkg.cmake")
+include("${project_root}/vcpkg_test/win/glib/scripts/buildsystems/vcpkg.cmake")
+set(ENV{PKG_CONFIG_PATH} "${project_root}/vcpkg_test/win/glib/installed/x64-windows/lib/pkgconfig")
 elseif(UNIX AND NOT APPLE)
-include("${one_cpp}/../../vcpkg_test/linux/glib/scripts/buildsystems/vcpkg.cmake")
+include("${project_root}/vcpkg_test/linux/glib/scripts/buildsystems/vcpkg.cmake")
 elseif(UNIX AND APPLE) 
-include("${one_cpp}/../../vcpkg_test/macos/glib/scripts/buildsystems/vcpkg.cmake")
+include("${project_root}/vcpkg_test/macos/glib/scripts/buildsystems/vcpkg.cmake")
 endif()
+
 
 find_package(PkgConfig)
 pkg_search_module(GLIB2 REQUIRED glib-2.0 IMPORTED_TARGET)
@@ -95,13 +100,16 @@ target_include_directories({{project}} BEFORE {{project_lib_type_inc}}
   {{/project_srcs}}
   $<INSTALL_INTERFACE:${include_install_dir}/>)
 
+target_include_directories({{project}} PUBLIC ${GLIB2_INCLUDE_DIRS})
+
+
 #{{#deps}}
 #target_include_directories({{project}} {{project_lib_type_inc}} 
 # deps/{{org}}/{{name}}/{{include_path}})
 #{{/deps}}
 
 target_link_libraries({{project}} {{project_lib_type}} 
-  PkgConfig::GLIB2
+ ${GLIB2_LIBRARIES}
   {{#platform_deps}}
     {{#components_link}}{{pkg_name}}::{{component}} {{/components_link}}
   {{/platform_deps}}

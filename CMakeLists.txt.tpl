@@ -65,6 +65,7 @@ include("${project_root}/vcpkg_test/win/glib/scripts/buildsystems/vcpkg.cmake")
 set(ENV{PKG_CONFIG_PATH} "${project_root}/vcpkg_test/win/glib/installed/x64-windows/lib/pkgconfig")
 elseif(UNIX AND NOT APPLE)
 include("${project_root}/vcpkg_test/linux/glib/scripts/buildsystems/vcpkg.cmake")
+set(ENV{PKG_CONFIG_PATH} "${project_root}/vcpkg_test/macos/glib/installed/x64-osx/lib/pkgconfig")
 elseif(UNIX AND APPLE) 
 include("${project_root}/vcpkg_test/macos/glib/scripts/buildsystems/vcpkg.cmake")
 endif()
@@ -109,7 +110,6 @@ target_include_directories({{project}} PUBLIC ${GLIB2_INCLUDE_DIRS})
 #{{/deps}}
 
 target_link_libraries({{project}} {{project_lib_type}} 
- ${GLIB2_LIBRARIES}
   {{#platform_deps}}
     {{#components_link}}{{pkg_name}}::{{component}} {{/components_link}}
   {{/platform_deps}}
@@ -127,6 +127,7 @@ if (NOT TIPI_LIB_ONLY)
 {{#executables}}
   # {{cmake_target_name}}
   add_executable({{cmake_target_name}} {{cpp_files}})
+  target_include_directories({{cmake_target_name}} PUBLIC ${GLIB2_INCLUDE_DIRS})
   set_target_properties({{cmake_target_name}} PROPERTIES OUTPUT_NAME {{output_name}})
   target_link_libraries({{cmake_target_name}} {{org}}_{{project}}::{{project}})
 

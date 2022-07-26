@@ -65,14 +65,24 @@ include("${project_root}/vcpkg_test/win/glib/scripts/buildsystems/vcpkg.cmake")
 set(ENV{PKG_CONFIG_PATH} "${project_root}/vcpkg_test/win/glib/installed/x64-windows/lib/pkgconfig")
 elseif(UNIX AND NOT APPLE)
 include("${project_root}/vcpkg_test/linux/glib/scripts/buildsystems/vcpkg.cmake")
-set(ENV{PKG_CONFIG_PATH} "${project_root}/vcpkg_test/macos/glib/installed/x64-osx/lib/pkgconfig")
 elseif(UNIX AND APPLE) 
 include("${project_root}/vcpkg_test/macos/glib/scripts/buildsystems/vcpkg.cmake")
+set(ENV{PKG_CONFIG_PATH} "${project_root}/vcpkg_test/macos/glib/installed/x64-osx/lib/pkgconfig")
 endif()
 
 
 find_package(PkgConfig)
 pkg_search_module(GLIB2 REQUIRED glib-2.0 IMPORTED_TARGET)
+include_directories(${GLIB2_INCLUDE_DIRS})
+
+if (WIN32)
+link_directories("${project_root}/vcpkg_test/win/glib/installed/x64-windows/lib")
+elseif(UNIX AND NOT APPLE)
+link_directories("${project_root}/vcpkg_test/macos/glib/installed/x64-osx/lib")
+elseif(UNIX AND APPLE) 
+link_directories("${project_root}/vcpkg_test/macos/glib/installed/x64-osx/lib")
+endif()
+
 
 find_package(Threads)
 
@@ -101,7 +111,6 @@ target_include_directories({{project}} BEFORE {{project_lib_type_inc}}
   {{/project_srcs}}
   $<INSTALL_INTERFACE:${include_install_dir}/>)
 
-target_include_directories({{project}} PUBLIC ${GLIB2_INCLUDE_DIRS})
 
 
 #{{#deps}}
@@ -110,6 +119,7 @@ target_include_directories({{project}} PUBLIC ${GLIB2_INCLUDE_DIRS})
 #{{/deps}}
 
 target_link_libraries({{project}} {{project_lib_type}} 
+${GLIB2_LIBRARIES}
   {{#platform_deps}}
     {{#components_link}}{{pkg_name}}::{{component}} {{/components_link}}
   {{/platform_deps}}
@@ -127,9 +137,8 @@ if (NOT TIPI_LIB_ONLY)
 {{#executables}}
   # {{cmake_target_name}}
   add_executable({{cmake_target_name}} {{cpp_files}})
-  target_include_directories({{cmake_target_name}} PUBLIC ${GLIB2_INCLUDE_DIRS})
   set_target_properties({{cmake_target_name}} PROPERTIES OUTPUT_NAME {{output_name}})
-  target_link_libraries({{cmake_target_name}} {{org}}_{{project}}::{{project}})
+  target_link_libraries({{cmake_target_name}} ${GLIB2_LIBRARIES} {{org}}_{{project}}::{{project}})
 
 {{/executables}}
 

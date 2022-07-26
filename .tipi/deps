@@ -1,3 +1,7 @@
 {
-   "platform" : [ "jansson::+jansson" ]
+   "platform" : [ "jansson::+jansson","Boost::system",
+   {"packages":["target"], "targets": [ "\"-framework CoreFoundation\"", "\"-framework CoreServices\"","\"-framework AppKit\"" ] },
+    "target::gobject-2.0","target::ffi","target::iconv","target::pcre","target::intl"
+   ]
+
 }
